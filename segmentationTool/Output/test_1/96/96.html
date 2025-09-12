@@ -1,0 +1,2050 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Data Analysis Report</title>
+            <meta charset="utf-8">
+            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+            <style>
+                @page {
+                    size: A4;
+                    margin: 1cm;
+                }
+                body {
+                    font-family: Arial; 
+                    padding: 20px; 
+                    max-width: 1000px; 
+                    margin: auto;
+                    font-size: 12px;
+                }
+                h1 { font-size: 18px; color: #2c3e50; }
+                h2 { font-size: 16px; color: #2c3e50; }
+                h3 { font-size: 14px; color: #2c3e50; }
+                h4 { font-size: 12px; color: #2c3e50; }
+                .plot-container {
+                    margin-bottom: 20px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    padding: 10px;
+                }
+                .button-bar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    background: white;
+                    padding: 10px 20px;
+                    border-bottom: 1px solid #ccc;
+                    z-index: 999;
+                    display: flex;
+                    justify-content: start;
+                    gap: 10px;
+                }
+                .button-bar button {
+                    padding: 8px 15px;
+                    font-size: 12px;
+                    border: none;
+                    border-radius: 5px;
+                    background-color: #3498db;
+                    color: white;
+                    cursor: pointer;
+                }
+                .content-wrapper {
+                    margin-top: 60px;
+                }
+                table {
+                    border-collapse: collapse;
+                    width: 100%;
+                    margin-bottom: 15px;
+                    font-size: 11px;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 6px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+                .stats-container {
+                    display: flex;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                    align-items: flex-start;
+                    page-break-inside: avoid;
+                }
+                .plot-wrapper {
+                    flex: 1;
+                    min-width: 0;
+                }
+                .stats-wrapper {
+                    flex: 1;
+                    min-width: 0;
+                    overflow-x: auto;
+                }
+                .extreme-values-container {
+                    display: flex;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                    flex-wrap: wrap;
+                    page-break-inside: avoid;
+                }
+                .extreme-values-box {
+                    flex: 1;
+                    min-width: 350px;
+                }
+                @media print {
+                    .button-bar {
+                        display: none;
+                    }
+                    body {
+                        padding: 0;
+                    }
+                }
+
+                 
+                tr:nth-child(even) {
+                    background-color: #f8f9fa;  /* Light grey for even rows */
+                }
+                tr:nth-child(odd) {
+                    background-color: #ffffff;  /* White for odd rows */
+                }
+                .sample-table {
+                    margin: 15px 0;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 4px;
+                    overflow: hidden;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                }
+                .sample-table th {
+                    background-color: #5b7c99 !important;
+                    color: white !important;
+                    font-weight: 600;
+                }
+                .sample-table td {
+                    padding: 8px 12px !important;
+                }
+                .copyright {
+                    text-align: center;
+                    margin: 20px 0;
+                    color: #6c757d;
+                    font-size: 0.9em;
+                }
+    
+            </style>
+        </head>
+        <body>
+        <div class="button-bar">
+            <button onclick="window.print()">🖨 Export PDF</button>
+            <button onclick="displayAll()">👁 Display All</button>
+        </div>
+
+        <div class="content-wrapper">
+            <h1>📊 Data Profiling Report</h1>
+
+
+            <h1>&nbsp;</h1>
+            <div class="plot-block" id="block-summary" style="margin-bottom: 30px;">
+                <div class="plot-controls">
+                    <input type="checkbox" id="checkbox-summary" class="plot-checkbox" checked onchange="toggleBlock('block-summary', this)">
+                    <label for="checkbox-summary">Include Summary Statistics Table</label>
+                </div>
+                <div id="summary-content">
+                    <h2>Summary Statistics</h2>
+                    <table class="dataframe summary">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>5%</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>95%</th>
+      <th>max</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>ID</th>
+      <td>53.0</td>
+      <td>27.00</td>
+      <td>15.44</td>
+      <td>1.00</td>
+      <td>3.60</td>
+      <td>14.00</td>
+      <td>27.00</td>
+      <td>40.00</td>
+      <td>50.40</td>
+      <td>53.00</td>
+    </tr>
+    <tr>
+      <th>Perimeter</th>
+      <td>53.0</td>
+      <td>182.49</td>
+      <td>340.37</td>
+      <td>14.24</td>
+      <td>21.29</td>
+      <td>36.38</td>
+      <td>52.87</td>
+      <td>106.43</td>
+      <td>720.62</td>
+      <td>1649.82</td>
+    </tr>
+    <tr>
+      <th>Area</th>
+      <td>53.0</td>
+      <td>1351.78</td>
+      <td>3152.28</td>
+      <td>10.50</td>
+      <td>14.60</td>
+      <td>78.00</td>
+      <td>153.00</td>
+      <td>530.50</td>
+      <td>6455.90</td>
+      <td>15402.00</td>
+    </tr>
+    <tr>
+      <th>Aspect Ratio</th>
+      <td>53.0</td>
+      <td>1.23</td>
+      <td>0.91</td>
+      <td>0.50</td>
+      <td>0.57</td>
+      <td>0.79</td>
+      <td>1.00</td>
+      <td>1.23</td>
+      <td>2.46</td>
+      <td>6.25</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+
+
+            <h1>&nbsp;</h1>
+            <div class="plot-block" id="block-desc" style="margin-bottom: 30px;">
+                <div class="plot-controls">
+                    <input type="checkbox" id="checkbox-desc" class="plot-checkbox" checked onchange="toggleBlock('block-desc', this)">
+                    <label for="checkbox-desc">Include Descriptive Statistics Section</label>
+                </div>
+                <div id="desc-section">
+                    <h2>Descriptive Statistics</h2>
+                    <div id="desc-content">
+                        <h3>🔢 Descriptive Statistics (Numeric)</h3><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>5%</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>95%</th>
+      <th>max</th>
+      <th>median</th>
+      <th>skew</th>
+      <th>kurtosis</th>
+      <th>iqr</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>ID</th>
+      <td>53.0</td>
+      <td>27.00</td>
+      <td>15.44</td>
+      <td>1.00</td>
+      <td>3.60</td>
+      <td>14.00</td>
+      <td>27.00</td>
+      <td>40.00</td>
+      <td>50.40</td>
+      <td>53.00</td>
+      <td>27.00</td>
+      <td>0.00</td>
+      <td>-1.20</td>
+      <td>26.00</td>
+    </tr>
+    <tr>
+      <th>Perimeter</th>
+      <td>53.0</td>
+      <td>182.49</td>
+      <td>340.37</td>
+      <td>14.24</td>
+      <td>21.29</td>
+      <td>36.38</td>
+      <td>52.87</td>
+      <td>106.43</td>
+      <td>720.62</td>
+      <td>1649.82</td>
+      <td>52.87</td>
+      <td>3.16</td>
+      <td>10.46</td>
+      <td>70.04</td>
+    </tr>
+    <tr>
+      <th>Area</th>
+      <td>53.0</td>
+      <td>1351.78</td>
+      <td>3152.28</td>
+      <td>10.50</td>
+      <td>14.60</td>
+      <td>78.00</td>
+      <td>153.00</td>
+      <td>530.50</td>
+      <td>6455.90</td>
+      <td>15402.00</td>
+      <td>153.00</td>
+      <td>3.30</td>
+      <td>11.44</td>
+      <td>452.50</td>
+    </tr>
+    <tr>
+      <th>Aspect Ratio</th>
+      <td>53.0</td>
+      <td>1.23</td>
+      <td>0.91</td>
+      <td>0.50</td>
+      <td>0.57</td>
+      <td>0.79</td>
+      <td>1.00</td>
+      <td>1.23</td>
+      <td>2.46</td>
+      <td>6.25</td>
+      <td>1.00</td>
+      <td>3.70</td>
+      <td>17.58</td>
+      <td>0.45</td>
+    </tr>
+  </tbody>
+</table>
+                    </div>
+                </div>
+            </div>
+
+            <h1>&nbsp;</h1>
+            <div class="plot-block" id="block-eda" style="margin-bottom: 30px;">
+                <div class="plot-controls">
+                    <input type="checkbox" id="checkbox-eda" class="plot-checkbox" checked onchange="toggleBlock('block-eda', this)">
+                    <label for="checkbox-eda">Include EDA Summary</label>
+                </div>
+                <div id="eda-content">
+                    <h2>Exploratory Data Analysis</h2>
+                    <p><b>Total Rows:</b> 53</p><p><b>Numeric Columns:</b> 4</p><p><b>Categorical Columns:</b> 0</p><p><b>Total Missing Values:</b> 0</p><p><b>Duplicate Rows:</b> 0</p><h4>⚠️ Highly Correlated Features (|r| > 0.9)</h4><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>level_0</th>
+      <th>level_1</th>
+      <th>Corr</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Perimeter</td>
+      <td>Area</td>
+      <td>0.99237</td>
+    </tr>
+    <tr>
+      <td>Area</td>
+      <td>Perimeter</td>
+      <td>0.99237</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+
+            <hr style="margin: 20px 0;">
+
+
+
+
+            <!-- All other plots -->
+            
+                <div class="plot-block" id="block-0">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-0" class="plot-checkbox" checked onchange="toggleBlock('block-0', this)">
+                        <label for="checkbox-0">Include this section</label>
+                    </div>
+                    <div class="plot"><p>No missing values in dataset.</p></div>
+                </div>
+                
+                <div class="plot-block" id="block-1">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-1" class="plot-checkbox" checked onchange="toggleBlock('block-1', this)">
+                        <label for="checkbox-1">Include this section</label>
+                    </div>
+                    <div class="plot">
+        <div style="display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; page-break-inside: avoid;">
+            <div style="flex: 1; min-width: 500px;">
+                <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="e3243efb-047d-4fe0-88e7-0aac27f27cc4" class="plotly-graph-div" style="height:400px; width:500px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("e3243efb-047d-4fe0-88e7-0aac27f27cc4")) {                    Plotly.newPlot(                        "e3243efb-047d-4fe0-88e7-0aac27f27cc4",                        [{"bingroup":"x","hovertemplate":"ID=%{x}\u003cbr\u003ecount=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#1f77b4","pattern":{"shape":""},"line":{"color":"white","width":0.5}},"name":"","nbinsx":30,"orientation":"v","showlegend":false,"x":{"dtype":"i1","bdata":"AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU="},"xaxis":"x","yaxis":"y","type":"histogram"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"ID"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"count"}},"legend":{"tracegroupgap":0},"title":{"text":"Histogram of ID"},"barmode":"relative","plot_bgcolor":"white","paper_bgcolor":"white","width":500,"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+            <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                <h4>Variable Statistics for ID</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Distinct</th>
+      <td>53.0</td>
+    </tr>
+    <tr>
+      <th>Distinct (%)</th>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>Missing</th>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Missing (%)</th>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Infinite</th>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Infinite (%)</th>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Zeros</th>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Zeros (%)</th>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Negative</th>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Negative (%)</th>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Memory size</th>
+      <td>556.0</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+        </div>
+                </div>
+                
+                <div class="plot-block" id="block-2">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-2" class="plot-checkbox" checked onchange="toggleBlock('block-2', this)">
+                        <label for="checkbox-2">Include this section</label>
+                    </div>
+                    <div class="plot">
+        <div style="display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; page-break-inside: avoid;">
+            <div style="flex: 0.5; min-width: 350px;">
+                <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="e8fb0f3b-0c66-4f40-9324-8900bb09dc17" class="plotly-graph-div" style="height:400px; width:350px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("e8fb0f3b-0c66-4f40-9324-8900bb09dc17")) {                    Plotly.newPlot(                        "e8fb0f3b-0c66-4f40-9324-8900bb09dc17",                        [{"alignmentgroup":"True","hovertemplate":"ID=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#1f77b4"},"name":"","notched":false,"offsetgroup":"","orientation":"v","showlegend":false,"x0":" ","xaxis":"x","y":{"dtype":"i1","bdata":"AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU="},"y0":" ","yaxis":"y","type":"box"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0]},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"ID"}},"legend":{"tracegroupgap":0},"title":{"text":"Boxplot of ID"},"boxmode":"group","plot_bgcolor":"white","paper_bgcolor":"white","width":350,"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+            <div style="flex: 1; display: flex; gap: 20px;">
+                <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                    <h4>Quantile Statistics for ID</h4>
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Minimum</th>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>5th percentile</th>
+      <td>3.6</td>
+    </tr>
+    <tr>
+      <th>Q1</th>
+      <td>14.0</td>
+    </tr>
+    <tr>
+      <th>Median</th>
+      <td>27.0</td>
+    </tr>
+    <tr>
+      <th>Q3</th>
+      <td>40.0</td>
+    </tr>
+    <tr>
+      <th>95th percentile</th>
+      <td>50.4</td>
+    </tr>
+    <tr>
+      <th>Maximum</th>
+      <td>53.0</td>
+    </tr>
+    <tr>
+      <th>Range</th>
+      <td>52.0</td>
+    </tr>
+    <tr>
+      <th>IQR</th>
+      <td>26.0</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+                <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                    <h4>Descriptive Statistics for ID</h4>
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Mean</th>
+      <td>27.0</td>
+    </tr>
+    <tr>
+      <th>Standard deviation</th>
+      <td>15.443445</td>
+    </tr>
+    <tr>
+      <th>Coefficient of variation (CV)</th>
+      <td>0.571979</td>
+    </tr>
+    <tr>
+      <th>Kurtosis</th>
+      <td>-1.200855</td>
+    </tr>
+    <tr>
+      <th>Median Absolute Deviation (MAD)</th>
+      <td>13.0</td>
+    </tr>
+    <tr>
+      <th>Skewness</th>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Sum</th>
+      <td>1431</td>
+    </tr>
+    <tr>
+      <th>Variance</th>
+      <td>238.5</td>
+    </tr>
+    <tr>
+      <th>Monotonicity</th>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        </div>
+        </div>
+                </div>
+                
+                <div class="plot-block" id="block-3">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-3" class="plot-checkbox" checked onchange="toggleBlock('block-3', this)">
+                        <label for="checkbox-3">Include this section</label>
+                    </div>
+                    <div class="plot">
+    <div style="margin: 20px 0; page-break-inside: avoid;">
+        <h3>Extreme Values Analysis: ID</h3>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <!-- Numerical Extremes -->
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Numerical Maximums (Largest Values)</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>53</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>52</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>51</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>49</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Numerical Minimums (Smallest Values)</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px;">
+            <!-- Frequency Extremes -->
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Most Frequent Values</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Least Frequent Values</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+    </div>
+    </div>
+                </div>
+                
+                <div class="plot-block" id="block-4">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-4" class="plot-checkbox" checked onchange="toggleBlock('block-4', this)">
+                        <label for="checkbox-4">Include this section</label>
+                    </div>
+                    <div class="plot">
+        <div style="display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; page-break-inside: avoid;">
+            <div style="flex: 1; min-width: 500px;">
+                <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="bdf889a7-ef95-42c6-91fb-8491bacd1ca9" class="plotly-graph-div" style="height:400px; width:500px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("bdf889a7-ef95-42c6-91fb-8491bacd1ca9")) {                    Plotly.newPlot(                        "bdf889a7-ef95-42c6-91fb-8491bacd1ca9",                        [{"bingroup":"x","hovertemplate":"Perimeter=%{x}\u003cbr\u003ecount=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#1f77b4","pattern":{"shape":""},"line":{"color":"white","width":0.5}},"name":"","nbinsx":30,"orientation":"v","showlegend":false,"x":{"dtype":"f8","bdata":"\u002f\u002f\u002f\u002fYzt8LEAAAABWQDFCQP7\u002f\u002fy9PUC9A\u002f\u002f\u002f\u002fFlm6RUABAAAwT1A3QP\u002f\u002f\u002f7EdPjJAAAAAcTbHQkAAAABXQDFDQAAAACJUhVZAAAAAVUAxQUAAAABXQDFCQAAAAHA2x0FAAQAACV5vRUAAAABWQDFEQAAAADBPUE1AAAAA4GyON0AAAACKLF1BQAAAAFZAMUJA\u002f\u002f\u002f\u002fkYrMPUAAADB15Z6JQAAAwFrviH9AAQAASEXmN0D9\u002f39z5f5bQAAAAGQ7fEhAAACg5+XMg0AAAADV1s6DQAEAgO1nWV1AAAAA7mfZSEAAAADuZ9lMQP\u002f\u002fTxBFx5lA\u002f\u002f\u002f\u002fI1QFS0AAAADUcUNJQP3\u002f\u002fy9P0FlAAQAAYjt8OkAAAABJReZUQAAAAOFsjklAAAAA+mIkSUAAAAB+MRJBQAAAgH0xElBAAQAACF5vSkAAAACrpO90QP\u002f\u002fvydoQJhAAAAAME9QS0AAAAD8YiQ+QAAAgG82x1FA\u002f\u002f9\u002f8g3jfEAAAIC2zPVYQP\u002f\u002ff9291mBAAAAAV0AxTUD9\u002f388SptaQAAAACNUhVdA\u002ff\u002f\u002fcDbHWkAAACDXqXOEQA=="},"xaxis":"x","yaxis":"y","type":"histogram"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Perimeter"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"count"}},"legend":{"tracegroupgap":0},"title":{"text":"Histogram of Perimeter"},"barmode":"relative","plot_bgcolor":"white","paper_bgcolor":"white","width":500,"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+            <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                <h4>Variable Statistics for Perimeter</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Distinct</th>
+      <td>52.00</td>
+    </tr>
+    <tr>
+      <th>Distinct (%)</th>
+      <td>98.11</td>
+    </tr>
+    <tr>
+      <th>Missing</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Missing (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Infinite</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Infinite (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Zeros</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Zeros (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Negative</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Negative (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Memory size</th>
+      <td>556.00</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+        </div>
+                </div>
+                
+                <div class="plot-block" id="block-5">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-5" class="plot-checkbox" checked onchange="toggleBlock('block-5', this)">
+                        <label for="checkbox-5">Include this section</label>
+                    </div>
+                    <div class="plot">
+        <div style="display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; page-break-inside: avoid;">
+            <div style="flex: 0.5; min-width: 350px;">
+                <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="4c1d6517-06fe-4627-93ce-0b5b21ed6dd9" class="plotly-graph-div" style="height:400px; width:350px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("4c1d6517-06fe-4627-93ce-0b5b21ed6dd9")) {                    Plotly.newPlot(                        "4c1d6517-06fe-4627-93ce-0b5b21ed6dd9",                        [{"alignmentgroup":"True","hovertemplate":"Perimeter=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#1f77b4"},"name":"","notched":false,"offsetgroup":"","orientation":"v","showlegend":false,"x0":" ","xaxis":"x","y":{"dtype":"f8","bdata":"\u002f\u002f\u002f\u002fYzt8LEAAAABWQDFCQP7\u002f\u002fy9PUC9A\u002f\u002f\u002f\u002fFlm6RUABAAAwT1A3QP\u002f\u002f\u002f7EdPjJAAAAAcTbHQkAAAABXQDFDQAAAACJUhVZAAAAAVUAxQUAAAABXQDFCQAAAAHA2x0FAAQAACV5vRUAAAABWQDFEQAAAADBPUE1AAAAA4GyON0AAAACKLF1BQAAAAFZAMUJA\u002f\u002f\u002f\u002fkYrMPUAAADB15Z6JQAAAwFrviH9AAQAASEXmN0D9\u002f39z5f5bQAAAAGQ7fEhAAACg5+XMg0AAAADV1s6DQAEAgO1nWV1AAAAA7mfZSEAAAADuZ9lMQP\u002f\u002fTxBFx5lA\u002f\u002f\u002f\u002fI1QFS0AAAADUcUNJQP3\u002f\u002fy9P0FlAAQAAYjt8OkAAAABJReZUQAAAAOFsjklAAAAA+mIkSUAAAAB+MRJBQAAAgH0xElBAAQAACF5vSkAAAACrpO90QP\u002f\u002fvydoQJhAAAAAME9QS0AAAAD8YiQ+QAAAgG82x1FA\u002f\u002f9\u002f8g3jfEAAAIC2zPVYQP\u002f\u002ff9291mBAAAAAV0AxTUD9\u002f388SptaQAAAACNUhVdA\u002ff\u002f\u002fcDbHWkAAACDXqXOEQA=="},"y0":" ","yaxis":"y","type":"box"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0]},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Perimeter"}},"legend":{"tracegroupgap":0},"title":{"text":"Boxplot of Perimeter"},"boxmode":"group","plot_bgcolor":"white","paper_bgcolor":"white","width":350,"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+            <div style="flex: 1; display: flex; gap: 20px;">
+                <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                    <h4>Quantile Statistics for Perimeter</h4>
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Minimum</th>
+      <td>14.24</td>
+    </tr>
+    <tr>
+      <th>5th percentile</th>
+      <td>21.29</td>
+    </tr>
+    <tr>
+      <th>Q1</th>
+      <td>36.38</td>
+    </tr>
+    <tr>
+      <th>Median</th>
+      <td>52.87</td>
+    </tr>
+    <tr>
+      <th>Q3</th>
+      <td>106.43</td>
+    </tr>
+    <tr>
+      <th>95th percentile</th>
+      <td>720.62</td>
+    </tr>
+    <tr>
+      <th>Maximum</th>
+      <td>1649.82</td>
+    </tr>
+    <tr>
+      <th>Range</th>
+      <td>1635.57</td>
+    </tr>
+    <tr>
+      <th>IQR</th>
+      <td>70.04</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+                <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                    <h4>Descriptive Statistics for Perimeter</h4>
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Mean</th>
+      <td>182.49279</td>
+    </tr>
+    <tr>
+      <th>Standard deviation</th>
+      <td>340.373674</td>
+    </tr>
+    <tr>
+      <th>Coefficient of variation (CV)</th>
+      <td>1.865135</td>
+    </tr>
+    <tr>
+      <th>Kurtosis</th>
+      <td>9.389808</td>
+    </tr>
+    <tr>
+      <th>Median Absolute Deviation (MAD)</th>
+      <td>23.071068</td>
+    </tr>
+    <tr>
+      <th>Skewness</th>
+      <td>3.067164</td>
+    </tr>
+    <tr>
+      <th>Sum</th>
+      <td>9672.117864</td>
+    </tr>
+    <tr>
+      <th>Variance</th>
+      <td>115854.237809</td>
+    </tr>
+    <tr>
+      <th>Monotonicity</th>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        </div>
+        </div>
+                </div>
+                
+                <div class="plot-block" id="block-6">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-6" class="plot-checkbox" checked onchange="toggleBlock('block-6', this)">
+                        <label for="checkbox-6">Include this section</label>
+                    </div>
+                    <div class="plot">
+    <div style="margin: 20px 0; page-break-inside: avoid;">
+        <h3>Extreme Values Analysis: Perimeter</h3>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <!-- Numerical Extremes -->
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Numerical Maximums (Largest Values)</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1649.82</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>1552.10</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>819.86</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>654.46</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>633.85</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Numerical Minimums (Smallest Values)</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>14.24</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>15.66</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>18.24</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>23.31</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>23.56</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px;">
+            <!-- Frequency Extremes -->
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Most Frequent Values</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>36.384776</td>
+      <td>2</td>
+      <td>3.773585</td>
+    </tr>
+    <tr>
+      <td>14.242641</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>15.656854</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>43.455844</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>23.313708</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Least Frequent Values</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>14.242641</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>15.656854</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>43.455844</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>23.313708</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>18.242641</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+    </div>
+    </div>
+                </div>
+                
+                <div class="plot-block" id="block-7">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-7" class="plot-checkbox" checked onchange="toggleBlock('block-7', this)">
+                        <label for="checkbox-7">Include this section</label>
+                    </div>
+                    <div class="plot">
+        <div style="display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; page-break-inside: avoid;">
+            <div style="flex: 1; min-width: 500px;">
+                <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="34ef4da5-d830-46b2-b1d1-2e82ff03eb97" class="plotly-graph-div" style="height:400px; width:500px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("34ef4da5-d830-46b2-b1d1-2e82ff03eb97")) {                    Plotly.newPlot(                        "34ef4da5-d830-46b2-b1d1-2e82ff03eb97",                        [{"bingroup":"x","hovertemplate":"Area=%{x}\u003cbr\u003ecount=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#1f77b4","pattern":{"shape":""},"line":{"color":"white","width":0.5}},"name":"","nbinsx":30,"orientation":"v","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAAJUAAAAAAAGBVQAAAAAAAAC5AAAAAAACAS0AAAAAAAAAsQAAAAAAAgDFAAAAAAABAQkAAAAAAAKBXQAAAAAAAgHFAAAAAAADgVEAAAAAAAKBWQAAAAAAAYFZAAAAAAABAQUAAAAAAAOBXQAAAAAAA4GFAAAAAAAAAK0AAAAAAACBVQAAAAAAAIFZAAAAAAAAAMkAAAAAAAFK\u002fQAAAAAAAn7FAAAAAAACAN0AAAAAAANSIQAAAAAAAoGJAAAAAAAC5sUAAAAAAgCa1QAAAAAAAkHNAAAAAAABQZUAAAAAAALBsQAAAAAAAFc5AAAAAAABwaUAAAAAAALBlQAAAAAAAwHVAAAAAAACAQEAAAAAAAABzQAAAAAAAIGNAAAAAAACgYkAAAAAAAIBTQAAAAAAAIGVAAAAAAACgUUAAAAAAgAOwQAAAAACAQctAAAAAAAAAVUAAAAAAAMBQQAAAAAAA8HNAAAAAAADWp0AAAAAAAJSAQAAAAAAAgJBAAAAAAAAQaUAAAAAAAEiIQAAAAAAAoIJAAAAAAACgZ0AAAAAAgB6wQA=="},"xaxis":"x","yaxis":"y","type":"histogram"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Area"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"count"}},"legend":{"tracegroupgap":0},"title":{"text":"Histogram of Area"},"barmode":"relative","plot_bgcolor":"white","paper_bgcolor":"white","width":500,"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+            <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                <h4>Variable Statistics for Area</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Distinct</th>
+      <td>52.00</td>
+    </tr>
+    <tr>
+      <th>Distinct (%)</th>
+      <td>98.11</td>
+    </tr>
+    <tr>
+      <th>Missing</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Missing (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Infinite</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Infinite (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Zeros</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Zeros (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Negative</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Negative (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Memory size</th>
+      <td>556.00</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+        </div>
+                </div>
+                
+                <div class="plot-block" id="block-8">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-8" class="plot-checkbox" checked onchange="toggleBlock('block-8', this)">
+                        <label for="checkbox-8">Include this section</label>
+                    </div>
+                    <div class="plot">
+        <div style="display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; page-break-inside: avoid;">
+            <div style="flex: 0.5; min-width: 350px;">
+                <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="54c968ba-6099-4aaa-9233-d15e826e0d01" class="plotly-graph-div" style="height:400px; width:350px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("54c968ba-6099-4aaa-9233-d15e826e0d01")) {                    Plotly.newPlot(                        "54c968ba-6099-4aaa-9233-d15e826e0d01",                        [{"alignmentgroup":"True","hovertemplate":"Area=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#1f77b4"},"name":"","notched":false,"offsetgroup":"","orientation":"v","showlegend":false,"x0":" ","xaxis":"x","y":{"dtype":"f8","bdata":"AAAAAAAAJUAAAAAAAGBVQAAAAAAAAC5AAAAAAACAS0AAAAAAAAAsQAAAAAAAgDFAAAAAAABAQkAAAAAAAKBXQAAAAAAAgHFAAAAAAADgVEAAAAAAAKBWQAAAAAAAYFZAAAAAAABAQUAAAAAAAOBXQAAAAAAA4GFAAAAAAAAAK0AAAAAAACBVQAAAAAAAIFZAAAAAAAAAMkAAAAAAAFK\u002fQAAAAAAAn7FAAAAAAACAN0AAAAAAANSIQAAAAAAAoGJAAAAAAAC5sUAAAAAAgCa1QAAAAAAAkHNAAAAAAABQZUAAAAAAALBsQAAAAAAAFc5AAAAAAABwaUAAAAAAALBlQAAAAAAAwHVAAAAAAACAQEAAAAAAAABzQAAAAAAAIGNAAAAAAACgYkAAAAAAAIBTQAAAAAAAIGVAAAAAAACgUUAAAAAAgAOwQAAAAACAQctAAAAAAAAAVUAAAAAAAMBQQAAAAAAA8HNAAAAAAADWp0AAAAAAAJSAQAAAAAAAgJBAAAAAAAAQaUAAAAAAAEiIQAAAAAAAoIJAAAAAAACgZ0AAAAAAgB6wQA=="},"y0":" ","yaxis":"y","type":"box"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0]},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Area"}},"legend":{"tracegroupgap":0},"title":{"text":"Boxplot of Area"},"boxmode":"group","plot_bgcolor":"white","paper_bgcolor":"white","width":350,"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+            <div style="flex: 1; display: flex; gap: 20px;">
+                <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                    <h4>Quantile Statistics for Area</h4>
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Minimum</th>
+      <td>10.5</td>
+    </tr>
+    <tr>
+      <th>5th percentile</th>
+      <td>14.6</td>
+    </tr>
+    <tr>
+      <th>Q1</th>
+      <td>78.0</td>
+    </tr>
+    <tr>
+      <th>Median</th>
+      <td>153.0</td>
+    </tr>
+    <tr>
+      <th>Q3</th>
+      <td>530.5</td>
+    </tr>
+    <tr>
+      <th>95th percentile</th>
+      <td>6455.9</td>
+    </tr>
+    <tr>
+      <th>Maximum</th>
+      <td>15402.0</td>
+    </tr>
+    <tr>
+      <th>Range</th>
+      <td>15391.5</td>
+    </tr>
+    <tr>
+      <th>IQR</th>
+      <td>452.5</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+                <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                    <h4>Descriptive Statistics for Area</h4>
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Mean</th>
+      <td>1351.783019</td>
+    </tr>
+    <tr>
+      <th>Standard deviation</th>
+      <td>3152.276237</td>
+    </tr>
+    <tr>
+      <th>Coefficient of variation (CV)</th>
+      <td>2.33194</td>
+    </tr>
+    <tr>
+      <th>Kurtosis</th>
+      <td>10.273673</td>
+    </tr>
+    <tr>
+      <th>Median Absolute Deviation (MAD)</th>
+      <td>120.0</td>
+    </tr>
+    <tr>
+      <th>Skewness</th>
+      <td>3.20729</td>
+    </tr>
+    <tr>
+      <th>Sum</th>
+      <td>71644.5</td>
+    </tr>
+    <tr>
+      <th>Variance</th>
+      <td>9936845.476052</td>
+    </tr>
+    <tr>
+      <th>Monotonicity</th>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        </div>
+        </div>
+                </div>
+                
+                <div class="plot-block" id="block-9">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-9" class="plot-checkbox" checked onchange="toggleBlock('block-9', this)">
+                        <label for="checkbox-9">Include this section</label>
+                    </div>
+                    <div class="plot">
+    <div style="margin: 20px 0; page-break-inside: avoid;">
+        <h3>Extreme Values Analysis: Area</h3>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <!-- Numerical Extremes -->
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Numerical Maximums (Largest Values)</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>15402.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>13955.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>8018.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>5414.5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>4537.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Numerical Minimums (Smallest Values)</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10.5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>13.5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>14.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>15.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>17.5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px;">
+            <!-- Frequency Extremes -->
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Most Frequent Values</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>149.0</td>
+      <td>2</td>
+      <td>3.773585</td>
+    </tr>
+    <tr>
+      <td>10.5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>15.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>85.5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>14.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Least Frequent Values</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10.5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>15.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>85.5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>14.0</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>17.5</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+    </div>
+    </div>
+                </div>
+                
+                <div class="plot-block" id="block-10">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-10" class="plot-checkbox" checked onchange="toggleBlock('block-10', this)">
+                        <label for="checkbox-10">Include this section</label>
+                    </div>
+                    <div class="plot">
+        <div style="display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; page-break-inside: avoid;">
+            <div style="flex: 1; min-width: 500px;">
+                <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="6c603d72-5c97-455d-8276-e16949458d27" class="plotly-graph-div" style="height:400px; width:500px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("6c603d72-5c97-455d-8276-e16949458d27")) {                    Plotly.newPlot(                        "6c603d72-5c97-455d-8276-e16949458d27",                        [{"bingroup":"x","hovertemplate":"Aspect Ratio=%{x}\u003cbr\u003ecount=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#1f77b4","pattern":{"shape":""},"line":{"color":"white","width":0.5}},"name":"","nbinsx":30,"orientation":"v","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAADwP5IkSZIkSeI\u002fAAAAAAAA6j+sqqqqqqr6PwAAAAAAAOA\u002fO7ETO7ET6z9UVVVVVVXxPzmO4ziO4+g\u002fddFFF1108T87sRM7sRPrP9mJndiJneg\u002fFTuxEzux8z8AAAAAAADkPy+66KKLLgJAuW3btm3b9j8zMzMzMzPzPwAAAAAAAPA\u002fFDuxEzux4z88mj\u002fYeDTvP2bFQAlvNOU\u002fJkmSJEmS9D8AAAAAAADwP5MkSZIkSfI\u002fndiJndiJ9z9BQUFBQUEBQG3btm3btvE\u002fAAAAAAAA8T87juM4juPwPw4kWmFzIOk\u002fAAAAAAAA8j8AAAAAAADyPzMzMzMzM+M\u002fMzMzMzMzA0C3bdu2bdsCQBzHcRzHcew\u002fMzMzMzMz8z+rqqqqqqrqPwAAAAAAAOQ\u002fWlpaWlpa6j9CSp5lRB\u002fgP7hnjsVwweM\u002fkiRJkiRJ4j8AAAAAAADwP9pQXkN5DfU\u002fAAAAAACABEC8u7u7u7vrP3rTm970puc\u002fVFVVVVVV9T8hIiIiIiLyP0eSJEmSJPE\u002fAAAAAAAAGUDlOI7jOI4LQA=="},"xaxis":"x","yaxis":"y","type":"histogram"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Aspect Ratio"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"count"}},"legend":{"tracegroupgap":0},"title":{"text":"Histogram of Aspect Ratio"},"barmode":"relative","plot_bgcolor":"white","paper_bgcolor":"white","width":500,"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+            <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                <h4>Variable Statistics for Aspect Ratio</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Distinct</th>
+      <td>44.00</td>
+    </tr>
+    <tr>
+      <th>Distinct (%)</th>
+      <td>83.02</td>
+    </tr>
+    <tr>
+      <th>Missing</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Missing (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Infinite</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Infinite (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Zeros</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Zeros (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Negative</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Negative (%)</th>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Memory size</th>
+      <td>556.00</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+        </div>
+                </div>
+                
+                <div class="plot-block" id="block-11">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-11" class="plot-checkbox" checked onchange="toggleBlock('block-11', this)">
+                        <label for="checkbox-11">Include this section</label>
+                    </div>
+                    <div class="plot">
+        <div style="display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; page-break-inside: avoid;">
+            <div style="flex: 0.5; min-width: 350px;">
+                <div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="fa603e41-c3f5-4532-aaff-8506f6664d69" class="plotly-graph-div" style="height:400px; width:350px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("fa603e41-c3f5-4532-aaff-8506f6664d69")) {                    Plotly.newPlot(                        "fa603e41-c3f5-4532-aaff-8506f6664d69",                        [{"alignmentgroup":"True","hovertemplate":"Aspect Ratio=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#1f77b4"},"name":"","notched":false,"offsetgroup":"","orientation":"v","showlegend":false,"x0":" ","xaxis":"x","y":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAADwP5IkSZIkSeI\u002fAAAAAAAA6j+sqqqqqqr6PwAAAAAAAOA\u002fO7ETO7ET6z9UVVVVVVXxPzmO4ziO4+g\u002fddFFF1108T87sRM7sRPrP9mJndiJneg\u002fFTuxEzux8z8AAAAAAADkPy+66KKLLgJAuW3btm3b9j8zMzMzMzPzPwAAAAAAAPA\u002fFDuxEzux4z88mj\u002fYeDTvP2bFQAlvNOU\u002fJkmSJEmS9D8AAAAAAADwP5MkSZIkSfI\u002fndiJndiJ9z9BQUFBQUEBQG3btm3btvE\u002fAAAAAAAA8T87juM4juPwPw4kWmFzIOk\u002fAAAAAAAA8j8AAAAAAADyPzMzMzMzM+M\u002fMzMzMzMzA0C3bdu2bdsCQBzHcRzHcew\u002fMzMzMzMz8z+rqqqqqqrqPwAAAAAAAOQ\u002fWlpaWlpa6j9CSp5lRB\u002fgP7hnjsVwweM\u002fkiRJkiRJ4j8AAAAAAADwP9pQXkN5DfU\u002fAAAAAACABEC8u7u7u7vrP3rTm970puc\u002fVFVVVVVV9T8hIiIiIiLyP0eSJEmSJPE\u002fAAAAAAAAGUDlOI7jOI4LQA=="},"y0":" ","yaxis":"y","type":"box"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0]},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Aspect Ratio"}},"legend":{"tracegroupgap":0},"title":{"text":"Boxplot of Aspect Ratio"},"boxmode":"group","plot_bgcolor":"white","paper_bgcolor":"white","width":350,"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+            </div>
+            <div style="flex: 1; display: flex; gap: 20px;">
+                <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                    <h4>Quantile Statistics for Aspect Ratio</h4>
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Minimum</th>
+      <td>0.50</td>
+    </tr>
+    <tr>
+      <th>5th percentile</th>
+      <td>0.57</td>
+    </tr>
+    <tr>
+      <th>Q1</th>
+      <td>0.79</td>
+    </tr>
+    <tr>
+      <th>Median</th>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>Q3</th>
+      <td>1.23</td>
+    </tr>
+    <tr>
+      <th>95th percentile</th>
+      <td>2.46</td>
+    </tr>
+    <tr>
+      <th>Maximum</th>
+      <td>6.25</td>
+    </tr>
+    <tr>
+      <th>Range</th>
+      <td>5.75</td>
+    </tr>
+    <tr>
+      <th>IQR</th>
+      <td>0.45</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+                <div style="flex: 1; min-width: 0; overflow-x: auto;">
+                    <h4>Descriptive Statistics for Aspect Ratio</h4>
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Mean</th>
+      <td>1.234501</td>
+    </tr>
+    <tr>
+      <th>Standard deviation</th>
+      <td>0.912632</td>
+    </tr>
+    <tr>
+      <th>Coefficient of variation (CV)</th>
+      <td>0.739272</td>
+    </tr>
+    <tr>
+      <th>Kurtosis</th>
+      <td>15.853759</td>
+    </tr>
+    <tr>
+      <th>Median Absolute Deviation (MAD)</th>
+      <td>0.222222</td>
+    </tr>
+    <tr>
+      <th>Skewness</th>
+      <td>3.591977</td>
+    </tr>
+    <tr>
+      <th>Sum</th>
+      <td>65.428539</td>
+    </tr>
+    <tr>
+      <th>Variance</th>
+      <td>0.832898</td>
+    </tr>
+    <tr>
+      <th>Monotonicity</th>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        </div>
+        </div>
+                </div>
+                
+                <div class="plot-block" id="block-12">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-12" class="plot-checkbox" checked onchange="toggleBlock('block-12', this)">
+                        <label for="checkbox-12">Include this section</label>
+                    </div>
+                    <div class="plot">
+    <div style="margin: 20px 0; page-break-inside: avoid;">
+        <h3>Extreme Values Analysis: Aspect Ratio</h3>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <!-- Numerical Extremes -->
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Numerical Maximums (Largest Values)</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>6.25</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>3.44</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>2.56</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>2.40</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>2.36</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Numerical Minimums (Smallest Values)</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0.50</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>0.50</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>0.57</td>
+      <td>2</td>
+      <td>3.773585</td>
+    </tr>
+    <tr>
+      <td>0.60</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>0.62</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px;">
+            <!-- Frequency Extremes -->
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Most Frequent Values</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1.000000</td>
+      <td>5</td>
+      <td>9.433962</td>
+    </tr>
+    <tr>
+      <td>0.571429</td>
+      <td>2</td>
+      <td>3.773585</td>
+    </tr>
+    <tr>
+      <td>0.625000</td>
+      <td>2</td>
+      <td>3.773585</td>
+    </tr>
+    <tr>
+      <td>0.846154</td>
+      <td>2</td>
+      <td>3.773585</td>
+    </tr>
+    <tr>
+      <td>1.125000</td>
+      <td>2</td>
+      <td>3.773585</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h4>Least Frequent Values</h4>
+                <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Value</th>
+      <th>Count</th>
+      <th>Frequency (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1.666667</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>0.812500</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>0.777778</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>1.090909</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+    <tr>
+      <td>1.083333</td>
+      <td>1</td>
+      <td>1.886792</td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+        </div>
+    </div>
+    </div>
+                </div>
+                
+                <div class="plot-block" id="block-13">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-13" class="plot-checkbox" checked onchange="toggleBlock('block-13', this)">
+                        <label for="checkbox-13">Include this section</label>
+                    </div>
+                    <div class="plot"><div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="5444a8ed-bc61-4717-a884-5da91c378438" class="plotly-graph-div" style="height:600px; width:700px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("5444a8ed-bc61-4717-a884-5da91c378438")) {                    Plotly.newPlot(                        "5444a8ed-bc61-4717-a884-5da91c378438",                        [{"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"x":["ID","Perimeter","Area","Aspect Ratio"],"y":["ID","Perimeter","Area","Aspect Ratio"],"z":{"dtype":"f8","bdata":"AAAAAAAA8D\u002fhehSuR+HKPwrXo3A9Csc\u002f16NwPQrX0z\u002fhehSuR+HKPwAAAAAAAPA\u002frkfhehSu7z+4HoXrUbiePwrXo3A9Csc\u002frkfhehSu7z8AAAAAAADwP7gehetRuJ6\u002f16NwPQrX0z+4HoXrUbieP7gehetRuJ6\u002fAAAAAAAA8D8=","shape":"4, 4"},"type":"heatmap"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Correlation Heatmap"},"plot_bgcolor":"white","paper_bgcolor":"white","width":700,"height":600},                        {"responsive": true}                    )                };            </script>        </div></div>
+                </div>
+                
+                <div class="plot-block" id="block-14">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-14" class="plot-checkbox" checked onchange="toggleBlock('block-14', this)">
+                        <label for="checkbox-14">Include this section</label>
+                    </div>
+                    <div class="plot"><div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="61339c93-0677-4eb7-b3bd-a1c8ba8e1ef9" class="plotly-graph-div" style="height:500px; width:700px;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("61339c93-0677-4eb7-b3bd-a1c8ba8e1ef9")) {                    Plotly.newPlot(                        "61339c93-0677-4eb7-b3bd-a1c8ba8e1ef9",                        [{"hovertemplate":"Perimeter=%{x}\u003cbr\u003eArea=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#9467bd","symbol":"circle"},"mode":"markers","name":"","orientation":"v","showlegend":false,"x":{"dtype":"f8","bdata":"\u002f\u002f\u002f\u002fYzt8LEAAAABWQDFCQP7\u002f\u002fy9PUC9A\u002f\u002f\u002f\u002fFlm6RUABAAAwT1A3QP\u002f\u002f\u002f7EdPjJAAAAAcTbHQkAAAABXQDFDQAAAACJUhVZAAAAAVUAxQUAAAABXQDFCQAAAAHA2x0FAAQAACV5vRUAAAABWQDFEQAAAADBPUE1AAAAA4GyON0AAAACKLF1BQAAAAFZAMUJA\u002f\u002f\u002f\u002fkYrMPUAAADB15Z6JQAAAwFrviH9AAQAASEXmN0D9\u002f39z5f5bQAAAAGQ7fEhAAACg5+XMg0AAAADV1s6DQAEAgO1nWV1AAAAA7mfZSEAAAADuZ9lMQP\u002f\u002fTxBFx5lA\u002f\u002f\u002f\u002fI1QFS0AAAADUcUNJQP3\u002f\u002fy9P0FlAAQAAYjt8OkAAAABJReZUQAAAAOFsjklAAAAA+mIkSUAAAAB+MRJBQAAAgH0xElBAAQAACF5vSkAAAACrpO90QP\u002f\u002fvydoQJhAAAAAME9QS0AAAAD8YiQ+QAAAgG82x1FA\u002f\u002f9\u002f8g3jfEAAAIC2zPVYQP\u002f\u002ff9291mBAAAAAV0AxTUD9\u002f388SptaQAAAACNUhVdA\u002ff\u002f\u002fcDbHWkAAACDXqXOEQA=="},"xaxis":"x","y":{"dtype":"f8","bdata":"AAAAAAAAJUAAAAAAAGBVQAAAAAAAAC5AAAAAAACAS0AAAAAAAAAsQAAAAAAAgDFAAAAAAABAQkAAAAAAAKBXQAAAAAAAgHFAAAAAAADgVEAAAAAAAKBWQAAAAAAAYFZAAAAAAABAQUAAAAAAAOBXQAAAAAAA4GFAAAAAAAAAK0AAAAAAACBVQAAAAAAAIFZAAAAAAAAAMkAAAAAAAFK\u002fQAAAAAAAn7FAAAAAAACAN0AAAAAAANSIQAAAAAAAoGJAAAAAAAC5sUAAAAAAgCa1QAAAAAAAkHNAAAAAAABQZUAAAAAAALBsQAAAAAAAFc5AAAAAAABwaUAAAAAAALBlQAAAAAAAwHVAAAAAAACAQEAAAAAAAABzQAAAAAAAIGNAAAAAAACgYkAAAAAAAIBTQAAAAAAAIGVAAAAAAACgUUAAAAAAgAOwQAAAAACAQctAAAAAAAAAVUAAAAAAAMBQQAAAAAAA8HNAAAAAAADWp0AAAAAAAJSAQAAAAAAAgJBAAAAAAAAQaUAAAAAAAEiIQAAAAAAAoIJAAAAAAACgZ0AAAAAAgB6wQA=="},"yaxis":"y","type":"scatter"},{"hovertemplate":"\u003cb\u003eOLS trendline\u003c\u002fb\u003e\u003cbr\u003eArea = 9.19056 * Perimeter + -325.428\u003cbr\u003eR\u003csup\u003e2\u003c\u002fsup\u003e=0.984798\u003cbr\u003e\u003cbr\u003ePerimeter=%{x}\u003cbr\u003eArea=%{y} \u003cb\u003e(trend)\u003c\u002fb\u003e\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#9467bd","symbol":"circle"},"mode":"lines","name":"","showlegend":false,"x":{"dtype":"f8","bdata":"\u002f\u002f\u002f\u002fYzt8LED+\u002f\u002f8vT1AvQP\u002f\u002f\u002f7EdPjJAAQAAME9QN0AAAADgbI43QAEAAEhF5jdAAQAAYjt8OkD\u002f\u002f\u002f+Risw9QAAAAPxiJD5AAAAAfjESQUAAAABVQDFBQAAAAIosXUFAAAAAcDbHQUAAAABWQDFCQAAAAFZAMUJAAAAAV0AxQkAAAABxNsdCQAAAAFdAMUNAAAAAVkAxREABAAAJXm9FQP\u002f\u002f\u002fxZZukVAAAAAZDt8SEAAAADuZ9lIQAAAAPpiJElAAAAA1HFDSUAAAADhbI5JQAEAAAheb0pA\u002f\u002f\u002f\u002fI1QFS0AAAAAwT1BLQAAAAO5n2UxAAAAAV0AxTUAAAAAwT1BNQAAAgH0xElBAAACAbzbHUUAAAABJReZUQAAAACJUhVZAAAAAI1SFV0AAAIC2zPVYQP3\u002f\u002fy9P0FlA\u002ff9\u002fPEqbWkD9\u002f\u002f9wNsdaQP3\u002ff3Pl\u002fltAAQCA7WdZXUD\u002f\u002f3\u002fdvdZgQAAAAKuk73RA\u002f\u002f9\u002f8g3jfEAAAMBa74h\u002fQAAAoOflzINAAAAA1dbOg0AAACDXqXOEQAAAMHXlnolA\u002f\u002f+\u002fJ2hAmED\u002f\u002f08QRceZQA=="},"xaxis":"x","y":{"dtype":"f8","bdata":"kwj27vRQaMCNkHkgCrFmwHsHfrKQuGPAzl+XkFnKW8Aa9jQ3oTtbwP6ysPXKcVrA2qC5GdiAVMDASaRHeMdJwBD7arvLM0jAwNorJutIJ8AAr9t\u002fKNMiwIDo7J3sCBnAAB7E5gyu9T\u002fAe6eI+e8hQMB7p4j57yFAoJ1qrfnvIUAw163ScbwzQDBTlciNWTtAUOMJVI\u002fdRkDo8gqnnCRRQChoIksrfVJAUGv8P+coX0B2OKoqiGpgQN6OHXjPFmFA9idnqSteYUB8sCb5cgpiQBJKZehID2RAVr98jNdnZUDAFfDZHhRmQKg6mqNQm2lA3K9q5yZlakDYFmgWg6xqQGjiBicXlnBA3ChzETSCdECKqkqcJq57QFQSovjNZ39AgCKVDADagEAqyYKXToGCQEvnsNJVfINAKp+MAYZlhEB3vICS+5eEQPTC3hEN\u002foVAyO0u1SCMh0DQA44KHIWMQNX828BogqVABqxy5rqkrkBEgJsPv9ewQPMjPLbSebVAeOp8lw18tUCfjUQOaDm2QNjtwAyQKbxAHLGplqA5y0Aah2aMqPrMQA=="},"yaxis":"y","type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Perimeter"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Area"}},"legend":{"tracegroupgap":0},"title":{"text":"Scatter: Perimeter vs Area (Corr=0.99)"},"plot_bgcolor":"white","paper_bgcolor":"white","width":700,"height":500},                        {"responsive": true}                    )                };            </script>        </div></div>
+                </div>
+                
+                <div class="plot-block" id="block-15">
+                    <div class="plot-controls">
+                        <input type="checkbox" id="checkbox-15" class="plot-checkbox" checked onchange="toggleBlock('block-15', this)">
+                        <label for="checkbox-15">Include this section</label>
+                    </div>
+                    <div class="plot">
+    <div style="page-break-before: always; margin-top: 40px;">
+        <h2>📋 Dataset Samples</h2>
+        
+        <div style="margin-bottom: 30px;">
+            <h3>First 10 Rows</h3>
+            <table border="1" class="dataframe sample-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ID</th>
+      <th>Perimeter</th>
+      <th>Area</th>
+      <th>Aspect Ratio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>14.242641</td>
+      <td>10.5</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>36.384776</td>
+      <td>85.5</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>15.656854</td>
+      <td>15.0</td>
+      <td>0.571429</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>43.455844</td>
+      <td>55.0</td>
+      <td>0.812500</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>23.313708</td>
+      <td>14.0</td>
+      <td>1.666667</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>18.242641</td>
+      <td>17.5</td>
+      <td>0.500000</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>37.556349</td>
+      <td>36.5</td>
+      <td>0.846154</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>38.384776</td>
+      <td>94.5</td>
+      <td>1.083333</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>90.083260</td>
+      <td>280.0</td>
+      <td>0.777778</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>34.384776</td>
+      <td>83.5</td>
+      <td>1.090909</td>
+    </tr>
+  </tbody>
+</table>
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+            <h3>Last 10 Rows</h3>
+            <table border="1" class="dataframe sample-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ID</th>
+      <th>Perimeter</th>
+      <th>Area</th>
+      <th>Aspect Ratio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>44</td>
+      <td>30.142135</td>
+      <td>67.0</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <td>45</td>
+      <td>71.112697</td>
+      <td>319.0</td>
+      <td>1.315789</td>
+    </tr>
+    <tr>
+      <td>46</td>
+      <td>462.190905</td>
+      <td>3051.0</td>
+      <td>2.562500</td>
+    </tr>
+    <tr>
+      <td>47</td>
+      <td>99.840620</td>
+      <td>530.5</td>
+      <td>0.866667</td>
+    </tr>
+    <tr>
+      <td>48</td>
+      <td>134.710677</td>
+      <td>1056.0</td>
+      <td>0.739130</td>
+    </tr>
+    <tr>
+      <td>49</td>
+      <td>58.384776</td>
+      <td>200.5</td>
+      <td>1.333333</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>106.426406</td>
+      <td>777.0</td>
+      <td>1.133333</td>
+    </tr>
+    <tr>
+      <td>51</td>
+      <td>94.083260</td>
+      <td>596.0</td>
+      <td>1.071429</td>
+    </tr>
+    <tr>
+      <td>52</td>
+      <td>107.112698</td>
+      <td>189.0</td>
+      <td>6.250000</td>
+    </tr>
+    <tr>
+      <td>53</td>
+      <td>654.457930</td>
+      <td>4126.5</td>
+      <td>3.444444</td>
+    </tr>
+  </tbody>
+</table>
+        </div>
+        
+
+    </div>
+    </div>
+                </div>
+                
+        </div>
+
+
+
+<script>
+function toggleBlock(blockId, checkbox) {
+    const block = document.getElementById(blockId);
+    if (!block) return;
+
+    if (checkbox.checked) {
+        block.style.display = 'block';
+    } else {
+        block.style.display = 'none';
+    }
+}
+
+function displayAll() {
+    document.querySelectorAll('.plot-block').forEach(el => {
+        el.style.display = 'block';
+    });
+    document.querySelectorAll('.plot-checkbox').forEach(cb => cb.checked = true);
+}
+</script>
+        </body>
+        </html>
+        

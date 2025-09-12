@@ -1,0 +1,310 @@
+{
+  "metadata": {
+    "created": "2025-09-08T16:25:39.146997",
+    "source_script": "contour_editor.py",
+    "original_image": "Output/Results/0_H_0_1_1_7.png",
+    "operations_count": 28
+  },
+  "core_parameters": {
+    "neighborhood_size": 7,
+    "color_spec": "HIP Actual Grascale Analysis",
+    "sv1": 110.0,
+    "sv2": 0.273,
+    "sv3": 0.0,
+    "sv4": 0.0,
+    "sv5": -1.0
+  },
+  "operations": [
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "morphological_erode",
+      "params": {
+        "Operation": "erode",
+        "Kernel Size": 3
+      },
+      "display_name": "Morphological Erode",
+      "metrics": {}
+    },
+    {
+      "method": "blur",
+      "params": {
+        "Blur Kernel Size": 5,
+        "Blur Type": "median"
+      },
+      "display_name": "Blur",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 250,
+        "Min Circularity": "0.31",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 250,
+        "Min Circularity": "0.31",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 250,
+        "Min Circularity": "0.31",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 250,
+        "Min Circularity": "0.31",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 250,
+        "Min Circularity": "0.09",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 250,
+        "Min Circularity": "0.09",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 250,
+        "Min Circularity": "0.09",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 250,
+        "Min Circularity": "0.09",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 10,
+        "Max Area": 515,
+        "Min Circularity": "0.54",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 10,
+        "Max Area": 200,
+        "Min Circularity": "0.22",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 10,
+        "Max Area": 200,
+        "Min Circularity": "0.22",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 10,
+        "Max Area": 200,
+        "Min Circularity": "0.22",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 200,
+        "Min Circularity": "0.22",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 200,
+        "Min Circularity": "0.22",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 5,
+        "Max Area": 200,
+        "Min Circularity": "0.22",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 1,
+        "Max Area": 200,
+        "Min Circularity": "0.22",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    }
+  ],
+  "cli_template": "python contour_editor.py --load-profile PROFILE.json --neighborhood 7 --color-spec HIP Actual Grascale Analysis --sv-values 110.0,0.273,0.0,0.0,-1.0"
+}

@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "created": "2025-08-12T22:56:42.450707",
+    "source_script": "contour_editor.py",
+    "original_image": "Output/Results/0_A172_Phase_A7_1_00d00h00m_2_7.png",
+    "operations_count": 4
+  },
+  "core_parameters": {
+    "neighborhood_size": 7,
+    "color_spec": "HIP Perceived Grayscale Analysis",
+    "sv1": 110.0,
+    "sv2": 0.273,
+    "sv3": 0.0,
+    "sv4": 0.0,
+    "sv5": -1.0
+  },
+  "operations": [
+    {
+      "method": "fill_below_threshold",
+      "params": {
+        "Threshold Area": 100
+      },
+      "display_name": "Fill Below Threshold",
+      "metrics": {}
+    },
+    {
+      "method": "morphological_erode",
+      "params": {
+        "Operation": "erode",
+        "Kernel Size": 3
+      },
+      "display_name": "Morphological Erode",
+      "metrics": {}
+    },
+    {
+      "method": "circularity_filter",
+      "params": {
+        "Min Area": 0,
+        "Max Area": 71,
+        "Min Circularity": "0.00",
+        "Max Circularity": "1.00",
+        "Mode": "remove"
+      },
+      "display_name": "Circularity Filter",
+      "metrics": {}
+    },
+    {
+      "method": "blur",
+      "params": {
+        "Blur Kernel Size": 5,
+        "Blur Type": "median"
+      },
+      "display_name": "Blur",
+      "metrics": {}
+    }
+  ],
+  "cli_template": "python contour_editor.py --load-profile PROFILE.json --neighborhood 7 --color-spec HIP Perceived Grayscale Analysis --sv-values 110.0,0.273,0.0,0.0,-1.0"
+}

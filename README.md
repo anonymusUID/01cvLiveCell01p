@@ -22,7 +22,7 @@ segmenttationTool the package developed for segmentation purpose.
     ```
 *The requirements are enlisted inside "requirement.txt" within the folder "segmenttationTool"
 
-## Video Demonatration about "How to use the tool"
+## Video Demonstration: "How to Use the Tool"
 https://youtu.be/ypNTPDXschs
 
 

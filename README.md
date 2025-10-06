@@ -1,4 +1,4 @@
-# 01cvLiveCell01
+# 01cvLiveCell01p
 LiveCell Segmentation Using Computer Vision
 
 Experimental_Results contains the input data, output data, SOTA comparison etc.

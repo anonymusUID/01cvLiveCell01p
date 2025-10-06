@@ -21,3 +21,8 @@ segmenttationTool the package developed for segmentation purpose.
     python main.py
     ```
 *The requirements are enlisted inside "requirement.txt" within the folder "segmenttationTool"
+
+## Video Demonatration about "How to use the tool"
+https://youtu.be/ypNTPDXschs
+
+
